@@ -8,7 +8,7 @@ import { writeFile } from 'fs/promises';
 
 
 
-const PORT = 3001;
+
 const DATA_FILE = path.join("data", "links.json");
 
 const serveFile = async(res, filePath, ContentType) => {
@@ -91,6 +91,8 @@ if (req.method === "POST" && req.url === "/Shorten") {
 
 });
 
-server.listen(PORT, () => {
-  console.log(`server runing at http://localhost : ${PORT}`);
+const PORT = process.env.PORT || 3001;
+
+server.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server running at http://localhost:${PORT}`);
 });
