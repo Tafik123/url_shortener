@@ -6,7 +6,7 @@ import { writeFile } from 'fs/promises';
 
 
 
-
+const PORT = process.env.PORT || 3001;
 
 
 const DATA_FILE = path.join("data", "links.json");
@@ -91,8 +91,8 @@ if (req.method === "POST" && req.url === "/Shorten") {
 
 });
 
-const PORT = process.env.PORT || 3001;
 
-server.listen(PORT, '0.0.0.0', () => {
+
+server.listen(PORT,  () => {
   console.log(`Server running at http://localhost:${PORT}`);
 });
