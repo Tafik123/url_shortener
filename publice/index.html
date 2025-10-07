@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+ <div class="container">
+    <h1>URL Shortener</h1>
+    <form id="shortener-form">
+        <div>
+            <label for="url">Enter URL</label>
+            <input type='url' id='url' name='url' required>
+        </div>
+        <div>
+            <label for="shortCode">Enter shortCode</label>
+            <input type='text' id='shortCode' name='shortCode' required>
+        </div>
+        <button type="submit">Shorten</button>
+    </form>
+    <h2>Shortened URLs:</h2>
+    <ul id="shortened-urls"></ul>
+ </div>  
+ <script>
+
+   const  fetchShortenedUrls = async()=>{
+        try{
+            const response= await fetch("/links");
+            const links = await response.json();
+            console.log(links);
+  
+            const list = document.getElementById('shortened-urls');
+            list .innerHTML = '';
+            for (const [shortCode, url] of Object.entries(links)) {
+                const li = document.createElement('li');
+                const shortUrl = url.length >= 30 ? `{url.slice(0,30)}...` : url;
+                li.innerHTML = `<a href="/${shortCode}" target= '_blank'>${window.location.origin}/${shortCode}</a> - ${shortUrl}`;
+                list.appendChild(li);
+ 
+}
+        }catch(error){
+            console.error('Error fetching shortened URLs:', error);
+            alert('An error occurred while fetching shortened URLs. Please try again.');
+        }
+    }
+  document.getElementById("shortener-form").addEventListener('submit', async (event) => {
+    event.preventDefault();
+
+    const formData = new FormData(event.target);
+    const url = formData.get('url');
+    const shortCode = formData.get('shortCode');
+    console.log(url, shortCode);
+
+    try {
+        const response = await fetch("/Shorten", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ url, shortCode })
+        });
+        if (response.ok) {
+            fetchShortenedUrls();
+            alert('URL shortened successfully');
+            event.target.reset();
+        } else {
+            const errorMessage = await response.text();
+            alert('Error:' + errorMessage);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('An error occurred while shortening the URL. Please try again.');
+    }
+  });
+//   fetchShortenedUrls();
+ </script> 
+</body>
+</html>
